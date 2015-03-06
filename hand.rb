@@ -42,6 +42,3 @@ class Hand
     @cards.length == 2 && value == 21
   end
 end
-
-h = Hand.new([Card.new(5), Card.new(1), Card.new(7)])
-puts h.value
