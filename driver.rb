@@ -33,16 +33,27 @@ class Driver
 
   def play_round
     @players.each do |player|
-      player.deal_in(@deck.deal, @deck.deal)
+      player.deal_in([@deck.deal, @deck.deal])
     end
     dealer_cards = [@deck.deal, @deck.deal]
-    @dealer.deal_in(dealer_cards[0], dealer_cards[1])
+    @dealer.deal_in([dealer_cards[0], dealer_cards[1]])
     dealer_show_card = dealer_cards[1]
 
-    @players.each do |player|
-      while(player.get_decision(dealer_show_card) == :hit)
+    (@players + [@dealer]).each do |player|
+      play_for_individual(player, dealer_show_card)
+    end
+  end
+
+  def play_for_individual(player, dealer_show_card)
+    decision = player.get_decision(dealer_show_card)
+    while(decision != :stand)
+      if decision == :hit
         player.hit(@deck.deal)
+      elsif decision == :double
+        player.double
+        play_for_individual(player.doubled_hand, dealer_show_card)
       end
+      decision = player.get_decision(dealer_show_card)
     end
   end
 
@@ -50,23 +61,28 @@ class Driver
     dealer_value = @dealer.busted? ? -1 : @dealer.value
 
     @players.each do |player|
-      # If the player busts its an automatic loss regardless of if dealer busts
-      if player.busted?
-        @stats.record_player_loss
-      end
-
-      player_value = player.busted? ? -1 : player.value
-      if player_value > dealer_value
-        @stats.record_player_win
-      elsif dealer_value > player_value
-        @stats.record_player_loss
-      else
-        @stats.record_push
-      end
+      record_stats_for_player(player, dealer_value)
     end
   end
-end
 
+  def record_stats_for_player(player, dealer_value)
+    # If the player busts its an automatic loss regardless of if dealer busts
+    if player.blackjack?
+      @stats.record_blackjack
+    elsif player.busted?
+      @stats.record_player_loss
+    elsif player.value > dealer_value
+      @stats.record_player_win
+    elsif dealer_value > player.value
+      @stats.record_player_loss
+    else
+      @stats.record_push
+    end
+
+    # handle doubled hands
+    record_stats_for_player(player.doubled_hand, dealer_value) if player.doubled?
+  end
+end
 
 d = Driver.new
 d.play_rounds(5, 500)

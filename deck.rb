@@ -2,7 +2,7 @@ require './card'
 
 class Deck
   DECK_SIZE = 52
-  TOO_LOW_NUMBER = 20
+  TOO_LOW_NUMBER = 22
 
   def initialize
     @cards = []
@@ -38,11 +38,4 @@ class Deck
   def running_low?
     DECK_SIZE - @index <= TOO_LOW_NUMBER
   end
-end
-
-d = Deck.new
-(1..100).each do |i|
-  #puts d.deal.value
-
-  d.shuffle if i == 50
 end

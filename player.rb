@@ -2,12 +2,14 @@ require './hand'
 
 # TODO - handle doubling and surrendering!!
 class Player
+  attr_reader :strategy, :doubled_hand
   def initialize(strategy)
     @strategy = strategy
   end
 
-  def deal_in(card1, card2)
-    @hand = Hand.new([card1, card2])
+  def deal_in(cards)
+    @hand = Hand.new(cards)
+    @doubled_hand = nil
   end
 
   # returns the symbol of the method to do
@@ -32,6 +34,21 @@ class Player
 
   def hit(card)
     @hand.hit(card)
+  end
+
+  def blackjack?
+    @hand.blackjack?
+  end
+
+  def double
+    # representing the doubled hand as a player with the same strategy
+    @doubled_hand = Player.new(@strategy)
+    @doubled_hand.deal_in([@hand[0]])
+    @hand = [@hand[1]]
+  end
+
+  def doubled?
+    !@doubled_hand.nil?
   end
 
   def play_with_dealer_strategy
