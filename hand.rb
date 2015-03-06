@@ -37,6 +37,10 @@ class Hand
     # matter for basic strategy so whatever
     @cards.length == 2 && @cards[0].value == @cards[1].value
   end
+
+  def blackjack?
+    @cards.length == 2 && value == 21
+  end
 end
 
 h = Hand.new([Card.new(5), Card.new(1), Card.new(7)])

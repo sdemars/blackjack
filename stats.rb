@@ -1,4 +1,6 @@
 class Stats
+  BLACKJACK_PAYOUT = 1.5
+
   def initialize
     @losses = 0
     @wins = 0
@@ -15,6 +17,10 @@ class Stats
 
   def record_push
     @pushes += 1
+  end
+
+  def record_blackjack
+    @wins += BLACKJACK_PAYOUT
   end
 
   def get_summary
