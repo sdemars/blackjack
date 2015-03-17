@@ -1,15 +1,17 @@
 require './hand'
+require './basic_strategy'
 
 # TODO - handle doubling and surrendering!!
 class Player
-  attr_reader :strategy, :doubled_hand
+  attr_reader :strategy, :split_hand
   def initialize(strategy)
     @strategy = strategy
   end
 
   def deal_in(cards)
     @hand = Hand.new(cards)
-    @doubled_hand = nil
+    @split_hand = nil
+    @doubled_up = false
   end
 
   # returns the symbol of the method to do
@@ -40,15 +42,23 @@ class Player
     @hand.blackjack?
   end
 
-  def double
-    # representing the doubled hand as a player with the same strategy
-    @doubled_hand = Player.new(@strategy)
-    @doubled_hand.deal_in([@hand[0]])
-    @hand = [@hand[1]]
+  def split
+    # representing the doubled hand as a player with the same strategy, bit hacky
+    @split_hand = Player.new(@strategy)
+    @split_hand.deal_in([@hand.first_card])
+    @hand = Hand.new([@hand.second_card])
+  end
+
+  def double_up
+    @doubled_up = true
+  end
+
+  def split?
+    !@split_hand.nil?
   end
 
   def doubled?
-    !@doubled_hand.nil?
+    @doubled_up
   end
 
   def play_with_dealer_strategy
@@ -61,44 +71,9 @@ class Player
     end
   end
 
+  # single deck basic strategy, source at:
+  # http://wizardofodds.com/games/blackjack/strategy/1-deck/
   def play_with_basic_strategy(dealer_show_value)
-    return play_with_dealer_strategy
-    val, soft = value(true)
-
-    if val <= 8
-      return :hit
-    elsif val == 9
-      if dealer_show_value >= 3 && dealer_show_value <= 6
-        :double
-      else
-        :hit
-      end
-    elsif val == 10
-      if dealer_show_value <= 9
-        :double
-      else
-        :hit
-      end
-    elsif val == 11
-
-    elsif val == 12
-
-    elsif val == 13
-
-    elsif val == 14
-
-    elsif val == 15
-
-    elsif val == 16
-
-    elsif val == 17
-
-    elsif val == 18
-
-    elsif val == 19 && soft
-
-    else
-      :stand
-    end
+    BasicStrategy.play(@hand, dealer_show_value)
   end
 end

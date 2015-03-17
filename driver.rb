@@ -47,11 +47,17 @@ class Driver
   def play_for_individual(player, dealer_show_card)
     decision = player.get_decision(dealer_show_card)
     while(decision != :stand)
+      #puts "decision is #{decision} for player #{player}"
       if decision == :hit
         player.hit(@deck.deal)
+      elsif decision == :split
+        player.split
+        #puts "player #{player} doubled to #{player.doubled_hand}"
+        play_for_individual(player.split_hand, dealer_show_card)
       elsif decision == :double
-        player.double
-        play_for_individual(player.doubled_hand, dealer_show_card)
+        player.double_up
+        player.hit(@deck.deal)
+        break
       end
       decision = player.get_decision(dealer_show_card)
     end
@@ -70,19 +76,19 @@ class Driver
     if player.blackjack?
       @stats.record_blackjack
     elsif player.busted?
-      @stats.record_player_loss
+      @stats.record_player_loss(player)
     elsif player.value > dealer_value
-      @stats.record_player_win
+      @stats.record_player_win(player)
     elsif dealer_value > player.value
-      @stats.record_player_loss
+      @stats.record_player_loss(player)
     else
-      @stats.record_push
+      @stats.record_push(player)
     end
 
     # handle doubled hands
-    record_stats_for_player(player.doubled_hand, dealer_value) if player.doubled?
+    record_stats_for_player(player.split_hand, dealer_value) if player.split?
   end
 end
 
 d = Driver.new
-d.play_rounds(5, 500)
+d.play_rounds(5, 50000)

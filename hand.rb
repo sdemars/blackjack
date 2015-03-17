@@ -9,6 +9,14 @@ class Hand
     @cards << card
   end
 
+  def first_card
+    @cards[0]
+  end
+
+  def second_card
+    @cards[1]
+  end
+
   # returns sum, soft - boolean as to whether it is a soft sum
   def value(include_soft = false)
     val = @cards.map(&:value).inject(:+)
