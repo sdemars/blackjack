@@ -2,7 +2,7 @@ require './card'
 
 class Deck
   DECK_SIZE = 52
-  TOO_LOW_NUMBER = 22
+  TOO_LOW_NUMBER = 25
 
   def initialize
     @cards = []
