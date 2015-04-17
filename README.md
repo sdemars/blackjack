@@ -1,2 +1,5 @@
 # blackjack
-Provides blackjack simulations and win percentage statistics to evaluate blackjack strategies
+Provides simulations and win percentage statistics for single deck blacjack under basic and dealer strategies.
+Card counting strategies and efficacy to come.
+
+Also Sean Abraham can suck it.
