@@ -1,8 +1,10 @@
 require './card'
 
 class Deck
+  attr_accessor :count
+
   DECK_SIZE = 52
-  TOO_LOW_NUMBER = 25
+  TOO_LOW_NUMBER = 26
 
   def initialize
     @cards = []
@@ -18,8 +20,16 @@ class Deck
   def deal
     raise "Out of Cards" if @index >= DECK_SIZE - 1
 
+    card = @cards[@index]
+
+    if card.value <= 6
+      @count += 1
+    elsif card.value >= 10
+      @count -= 1
+    end
+
     @index += 1
-    @cards[@index - 1]
+    card
   end
 
   def shuffle
@@ -33,6 +43,8 @@ class Deck
 
     # reset "top of deck"
     @index = 0
+    # reset card count
+    @count = 0
   end
 
   def running_low?
