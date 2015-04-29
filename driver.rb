@@ -10,9 +10,10 @@ class Driver
 
     @deck = Deck.new
     num_rounds.times do
+      count = @deck.count
       play_round
 
-      compute_winners_and_update_stats
+      compute_winners_and_update_stats(count)
 
       if @deck.running_low?
         @deck.shuffle
@@ -63,32 +64,32 @@ class Driver
     end
   end
 
-  def compute_winners_and_update_stats
+  def compute_winners_and_update_stats(count)
     dealer_value = @dealer.busted? ? -1 : @dealer.value
 
     @players.each do |player|
-      record_stats_for_player(player, dealer_value)
+      record_stats_for_player(player, dealer_value, count)
     end
   end
 
-  def record_stats_for_player(player, dealer_value)
+  def record_stats_for_player(player, dealer_value, count)
     # If the player busts its an automatic loss regardless of if dealer busts
     if player.blackjack?
-      @stats.record_blackjack
+      @stats.record_blackjack(count)
     elsif player.busted?
-      @stats.record_player_loss(player)
+      @stats.record_player_loss(player, count)
     elsif player.value > dealer_value
-      @stats.record_player_win(player)
+      @stats.record_player_win(player, count)
     elsif dealer_value > player.value
-      @stats.record_player_loss(player)
+      @stats.record_player_loss(player, count)
     else
-      @stats.record_push(player)
+      @stats.record_push(player, count)
     end
 
     # handle doubled hands
-    record_stats_for_player(player.split_hand, dealer_value) if player.split?
+    record_stats_for_player(player.split_hand, dealer_value, count) if player.split?
   end
 end
 
 d = Driver.new
-d.play_rounds(5, 50000)
+d.play_rounds(5, 500000)
