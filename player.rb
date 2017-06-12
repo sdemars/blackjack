@@ -1,5 +1,6 @@
 require './hand'
 require './basic_strategy'
+require './dealer_strategy'
 
 # TODO - handle doubling and surrendering!!
 class Player
@@ -17,13 +18,7 @@ class Player
   # returns the symbol of the method to do
   def get_decision(dealer_show_card)
     dealer_show_value = dealer_show_card.value
-    if @strategy == :basic
-      play_with_basic_strategy(dealer_show_value)
-    elsif @strategy == :dealer
-      play_with_dealer_strategy
-    else
-      raise "Unrecognized strategy"
-    end
+    @strategy.play(@hand, dealer_show_value)
   end
 
   def busted?
@@ -44,7 +39,7 @@ class Player
 
   def split
     # representing the doubled hand as a player with the same strategy, bit hacky
-    @split_hand = Player.new(@strategy)
+    @split_hand = Player.new(BasicStrategy)
     @split_hand.deal_in([@hand.first_card])
     @hand = Hand.new([@hand.second_card])
   end
@@ -59,21 +54,5 @@ class Player
 
   def doubled?
     @doubled_up
-  end
-
-  def play_with_dealer_strategy
-    # assuming a dealer HITS on soft 17
-    value, soft = @hand.value(true)
-    if value > 17 || (value == 17 && !soft)
-      :stand
-    else
-      :hit
-    end
-  end
-
-  # single deck basic strategy, source at:
-  # http://wizardofodds.com/games/blackjack/strategy/1-deck/
-  def play_with_basic_strategy(dealer_show_value)
-    BasicStrategy.play(@hand, dealer_show_value)
   end
 end

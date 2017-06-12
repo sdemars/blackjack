@@ -44,7 +44,6 @@ class Stats
   end
 
   def compute_player_edge(hash)
-    puts "stats for #{hash}"
     (hash[:wins] - hash[:losses]).to_f * 100 / (hash[:wins] + hash[:losses] + hash[:pushes])
   end
 
@@ -68,7 +67,7 @@ class Stats
 
   def get_summary
     total = get_total_stats_hash
-    puts "total at the end is #{total}"
+    #puts "total at the end is #{total}"
     total_hands = total[:wins] + total[:losses] + total[:pushes]
     winning_percentage = total[:wins].to_f / (total_hands)
 

@@ -1,6 +1,8 @@
 require './deck'
 require './player'
 require './stats'
+require './basic_strategy'
+require './dealer_strategy'
 
 class Driver
   def play_rounds(num_players, num_rounds)
@@ -26,10 +28,10 @@ class Driver
   def initialize_players(num_players)
     @players = []
     (num_players - 1).times do
-      @players << Player.new(:basic)
+      @players << Player.new(BasicStrategy)
     end
     # Add the dealer
-    @dealer = Player.new(:dealer)
+    @dealer = Player.new(DealerStrategy)
   end
 
   def play_round
@@ -92,4 +94,4 @@ class Driver
 end
 
 d = Driver.new
-d.play_rounds(5, 500000)
+d.play_rounds(5, 50000)
