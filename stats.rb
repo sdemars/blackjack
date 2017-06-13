@@ -3,6 +3,8 @@ class Stats
 
   def initialize
     @by_count = {}
+    # Temp until factor out
+    @player_bankrolls = []
   end
 
   def init_for_count(count)
@@ -11,6 +13,10 @@ class Stats
       :wins => 0,
       :pushes => 0
     }
+  end
+
+  def record_bankrolls(bankrolls)
+    @player_bankrolls.append(bankrolls)
   end
 
   def record_player_loss(player, count)
