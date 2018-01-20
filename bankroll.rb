@@ -47,6 +47,13 @@ class Bankroll
   	reset_bet
   end
 
+  def record_surrender
+    # This is always the same across rule types
+    surrender_ratio = 0.5
+    @chip_count = @chip_count - @bet * surrender_ratio
+    reset_bet
+  end
+
   def record_push
   	raise "No bet on table" if @bet.nil?
 

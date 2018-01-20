@@ -81,7 +81,13 @@ class BasicStrategy
   end
 
   def self.play_hard(val, dealer_show_value)
-    if (13..16).include?(val)
+    if val == 16
+      if dealer_show_value >= 10
+        :surrender
+      else
+        :stand
+      end
+    elsif (13..15).include?(val)
       if dealer_show_value <= 6
         :stand
       else

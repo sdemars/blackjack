@@ -15,6 +15,7 @@ class Player
     @hand = Hand.new(cards)
     @split_hand = nil
     @doubled_up = false
+    @surrendered = false
     # TODO move to where we have count
     @bankroll.get_and_record_bet(0)
   end
@@ -50,6 +51,14 @@ class Player
 
   def double_up
     @doubled_up = true
+  end
+
+  def surrender
+    @surrendered = true 
+  end
+
+  def surrendered?
+    @surrendered
   end
 
   def split?

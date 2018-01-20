@@ -56,7 +56,10 @@ class Driver
     decision = player.get_decision(dealer_show_card)
     while(decision != :stand)
       #puts "decision is #{decision} for player #{player}"
-      if decision == :hit
+      if decision == :surrender
+        player.surrender
+        break
+      elsif decision == :hit
         player.hit(@deck.deal)
       elsif decision == :split
         player.split
@@ -85,6 +88,10 @@ class Driver
       @stats.record_blackjack(count)
       # TODO pass in reference
       player.bankroll.record_blackjack(1.5)
+    elsif player.surrendered?
+      # TODO should this count as a loss or a partial loss
+      player.bankroll.record_surrender
+      @stats.record_surrender(count)
     elsif player.busted?
       player.bankroll.record_player_loss
       @stats.record_player_loss(player, count)

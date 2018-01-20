@@ -39,6 +39,12 @@ class Stats
     @by_count[count][:wins] += BLACKJACK_PAYOUT
   end
 
+  def record_surrender(count)
+    init_for_count(count) if @by_count[count].nil?
+    # Count a surrender as half a loss
+    @by_count[count][:losses] += 0.5
+  end
+
   def get_total_stats_hash(hash = nil)
     hash ||= @by_count
     hash.inject({wins: 0, losses: 0, pushes:0}) do |total, (count, values)|
